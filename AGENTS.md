@@ -26,5 +26,7 @@ See docs/agents/agent-collaboration.md in the infra repository for the shared Cl
 - Use `scripts/agent-lease.sh park` and `resume` for pauses. Use `request-takeover` and `accept-takeover` for graceful handoff; parked or expired takeover requires a reason.
 - Active takeover requires the exact lease ID, reason, and interactive operator confirmation. Use `close` only after final worktree cleanup.
 - Never manually claim a lease, bypass hooks, reset or stash another session's work, or edit shared main.
+- Agent Coordination outage is different from lease denial: verify endpoint health and use configured endpoint-switch guidance before recovery. Never retry an ambiguous lease mutation. Cached leases remain fail-closed for mutation.
+- Primary recovery and operator-controlled Hermes standby promotion are documented in `infra-docs/runbooks/AGENT_COORDINATION_RECOVERY.md`; standby is single-writer and never auto-promoted.
 - During a confirmed Linear outage, only the explicit operator command `rollout-linear-enrollment.sh --git-only --operator <name>` may use the Git-only enrollment lane; it still requires an isolated rollout worktree and never authorizes general implementation or production work.
 <!-- STAROS_LINEAR_GUARD_CONTRACT_END -->
