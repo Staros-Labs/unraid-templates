@@ -25,6 +25,8 @@ See docs/agents/agent-collaboration.md in the infra repository for the shared Cl
 - Active leases expire after 15 minutes without heartbeat and become parked reservations retained for 30 days; parked sessions never authorize mutation.
 - Use `scripts/agent-lease.sh park` and `resume` for pauses. Use `request-takeover` and `accept-takeover` for graceful handoff; parked or expired takeover requires a reason.
 - Active takeover requires the exact lease ID, reason, and interactive operator confirmation. Use `close` only after final worktree cleanup.
+- Trusted sessions may administratively park exact leases or explicit repository-scoped active batches with a reason. `admin_parked` revokes mutation authority, preserves session identity, and blocks automatic resume; run `admin-unpark` before exact-context resume.
+- Use `scripts/agent-lease.sh fence --repo REPO --reason "..."` and `unfence` to block new claims during maintenance. Never edit markers or coordination database state.
 - Never manually claim a lease, bypass hooks, reset or stash another session's work, or edit shared main.
 - Agent Coordination outage is different from lease denial: verify endpoint health and use configured endpoint-switch guidance before recovery. Never retry an ambiguous lease mutation. Cached leases remain fail-closed for mutation.
 - Primary recovery and operator-controlled Hermes standby promotion are documented in `infra-docs/runbooks/AGENT_COORDINATION_RECOVERY.md`; standby is single-writer and never auto-promoted.
