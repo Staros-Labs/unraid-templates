@@ -20,6 +20,7 @@ See docs/agents/agent-collaboration.md in the infra repository for the shared Cl
 - Use the repository's Linear bootstrap flow before substantive work.
 - Exact `git fetch origin` is allowed from any checkout; `git pull --ff-only` requires a clean checkout.
 - Approved read-only inspection, synchronization, startup, and recovery commands may run before a lease.
+- Chrome and Computer Use browser actions bypass repo lease protection by policy; browser confirmation rules still apply. Browser-based GitHub, Linear, deploy, and production actions therefore require care because they do not establish or check a repo lease.
 - Bounded `&&`, `||`, and semicolon chains are allowed only when every segment is independently approved read-only; one unsafe or unknown segment rejects whole chain.
 - All Agent Context MCP tools, including `context_promote` and `context_update`, are available pre-lease. Context writes stay in curated local memory and cannot edit tracked repository files.
 - Tracked edits, commits, pushes, merges, deploys, and production mutations require a live worktree lease.
