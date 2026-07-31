@@ -17,12 +17,15 @@ See docs/agents/agent-collaboration.md in the infra repository for the shared Cl
 <!-- STAROS_LINEAR_GUARD_CONTRACT_START -->
 ## Shared agent execution contract
 
-- Use the repository's Linear bootstrap flow before substantive work.
+- Pure read-only inspection, audit, and approved read-verb MCP calls may run before Linear bootstrap, an issue, or a worktree.
+- Repo execution, tracked changes, tests, builds, lifecycle updates, and unknown or mutating MCP tools require the repository's Linear bootstrap flow and a live worktree lease.
+- Title-only compliance renames may use `scripts/linear-work-item.sh rename --issue KEY --title "..." --reason "..."` from clean main; the helper validates team ownership and posts an audit comment.
+- Direct Linear CLI writes and arbitrary MCP writes remain lease-gated.
 - Exact `git fetch origin` is allowed from any checkout; `git pull --ff-only` requires a clean checkout.
 - Approved read-only inspection, synchronization, startup, and recovery commands may run before a lease.
 - Chrome and Computer Use browser actions bypass repo lease protection by policy; browser confirmation rules still apply. Browser-based GitHub, Linear, deploy, and production actions therefore require care because they do not establish or check a repo lease.
 - Bounded `&&`, `||`, and semicolon chains are allowed only when every segment is independently approved read-only; one unsafe or unknown segment rejects whole chain.
-- All Agent Context MCP tools, including `context_promote` and `context_update`, are available pre-lease. Context writes stay in curated local memory and cannot edit tracked repository files.
+- All Agent Context MCP tools, including `context_promote`, `context_update`, and `context_resync`, are available pre-lease. Context writes and reporting stay in curated local memory or configured reporting paths and cannot edit tracked repository files.
 - Tracked edits, commits, and pushes require a live worktree lease. During a confirmed Linear outage, existing tasks, new tasks, emergency documentation, branch commits, and branch pushes remain allowed in isolated leased worktrees.
 - Degraded new-task branches use `DEGRADED-<id>-slug` and bind `LINEAR_REMOTE_ISSUE` after reconciliation; existing issue branches retain their real issue key.
 - Degraded lifecycle events enter the mode-600 local outbox. `scripts/linear-outbox.sh reconcile` runs one drain pass; the launchd worker runs every five minutes. Rate limits pause the shared drain, permanent errors block the event, and reconciliation never merges, releases, deploys, or mutates production automatically.
