@@ -19,11 +19,17 @@ See docs/agents/agent-collaboration.md in the infra repository for the shared Cl
 
 - Pure read-only inspection, audit, and approved read-verb MCP calls may run before Linear bootstrap, an issue, or a worktree.
 - Repo execution, tracked changes, tests, builds, lifecycle updates, and unknown or mutating MCP tools require the repository's Linear bootstrap flow and a live worktree lease.
+- Every actual execution workstream requires a durable Linear child under its primary issue, including work in primary repo; use `--workstream 'REPO|KEY|TITLE|DESCRIPTION'` or `workstream ensure`, and never reuse an unrelated repo issue or lease.
+- Primary issue scope must declare every authorized repo with `--execution-repos`; repair existing scope with `scripts/linear-work-item.sh scope ensure --issue KEY --primary-repo REPO --execution-repos CSV` before bootstrap.
+- Secondary sessions use `--primary-issue`, `--primary-repo`, and matching workstream fields; child parent, repo, and scope identity must match before lease claim.
 - Title-only compliance renames may use `scripts/linear-work-item.sh rename --issue KEY --title "..." --reason "..."` from clean main; the helper validates team ownership and posts an audit comment.
 - Direct Linear CLI writes and arbitrary MCP writes remain lease-gated.
+- Known read-only connector variants may run pre-lease, including GitHub fetch tools, `mcp__codegraph__codegraph_explore`, `web__run`, and `request_user_input`; unknown or mutation variants remain gated.
+- Pathless connector mutations require exact session or thread identity mapped to one live worktree and matching target repository; missing, stale, ambiguous, and mismatched context blocks.
 - Exact `git fetch origin` is allowed from any checkout; `git pull --ff-only` requires a clean checkout.
 - Approved read-only inspection, synchronization, startup, and recovery commands may run before a lease.
 - Chrome and Computer Use browser actions bypass repo lease protection by policy; browser confirmation rules still apply. Browser-based GitHub, Linear, deploy, and production actions therefore require care because they do not establish or check a repo lease.
+- Legacy non-browser GitHub close, comment, and update actions require an exact single-use receipt with verified Linear mapping, GitHub linkage, target, operator, and TTL; receipt replay and mismatch block.
 - Bounded `&&`, `||`, and semicolon chains are allowed only when every segment is independently approved read-only; one unsafe or unknown segment rejects whole chain.
 - All Agent Context MCP tools, including `context_promote`, `context_update`, and `context_resync`, are available pre-lease. Context writes and reporting stay in curated local memory or configured reporting paths and cannot edit tracked repository files.
 - Tracked edits, commits, and pushes require a live worktree lease. During a confirmed Linear outage, existing tasks, new tasks, emergency documentation, branch commits, and branch pushes remain allowed in isolated leased worktrees.
