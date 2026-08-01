@@ -31,3 +31,11 @@ After installing a template that requires drive access (omnibus, collector, coll
 
 - Issues: https://github.com/Starosdev/scrutiny/issues
 - Documentation: https://github.com/Starosdev/scrutiny/tree/master/docs
+
+## GHAS-free security baseline
+
+`.github/workflows/security-baseline.yml` runs report-only Gitleaks, OSV-Scanner, and Trivy
+filesystem or IaC checks on pull requests, pushes to `main`, and a weekly schedule. Jobs call
+reusable workflows in `Staros-Labs/infra` at one exact immutable 40-character commit and
+produce private, short-retention artifacts for central inventory. Caller has no workflow-level
+path filters, CodeQL, SARIF uploads, or `security-events`; it does not promote branch gates.

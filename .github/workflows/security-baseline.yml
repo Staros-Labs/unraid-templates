@@ -1,0 +1,56 @@
+name: Security baseline
+
+# Required scanner callers stay unfiltered so every pull request receives a
+# status. Scanner scope belongs in reusable workflow inputs.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "47 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gitleaks:
+    uses: Staros-Labs/infra/.github/workflows/reusable-security-gitleaks.yml@e3b2d2216d219115ffe796aa4cd000a5f41f8b0a
+    with:
+      report_only: true
+      scan_history: false
+    permissions:
+      contents: read
+
+  osv:
+    uses: Staros-Labs/infra/.github/workflows/reusable-security-osv.yml@e3b2d2216d219115ffe796aa4cd000a5f41f8b0a
+    with:
+      report_only: true
+      scan_ref: .
+    permissions:
+      contents: read
+
+  filesystem:
+    uses: Staros-Labs/infra/.github/workflows/reusable-security-trivy.yml@e3b2d2216d219115ffe796aa4cd000a5f41f8b0a
+    with:
+      report_only: true
+      scan_type: fs
+      scan_ref: .
+      scanners: vuln
+      severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+      generate_sbom: true
+      artifact_name: security-trivy-filesystem-report
+    permissions:
+      contents: read
+
+  iac:
+    uses: Staros-Labs/infra/.github/workflows/reusable-security-trivy.yml@e3b2d2216d219115ffe796aa4cd000a5f41f8b0a
+    with:
+      report_only: true
+      scan_type: fs
+      scan_ref: .
+      scanners: misconfig
+      severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+      artifact_name: security-trivy-iac-report
+    permissions:
+      contents: read
