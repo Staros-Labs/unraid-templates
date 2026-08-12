@@ -1,0 +1,27 @@
+name: Security baseline
+
+# Required caller emits status on every pull request; scanner scope belongs in reusable inputs.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gitleaks:
+    uses: Staros-Labs/infra/.github/workflows/reusable-security-gitleaks.yml@07dce02accd706afbcb8a8b420de0979d3f03364
+    with:
+      report_only: true
+      scan_history: false
+    permissions:
+      contents: read
+
+  osv:
+    uses: Staros-Labs/infra/.github/workflows/reusable-security-osv.yml@07dce02accd706afbcb8a8b420de0979d3f03364
+    with:
+      report_only: true
+    permissions:
+      contents: read
