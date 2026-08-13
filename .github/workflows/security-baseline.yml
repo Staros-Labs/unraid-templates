@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   gitleaks:
-    uses: Staros-Labs/infra/.github/workflows/reusable-security-gitleaks.yml@07dce02accd706afbcb8a8b420de0979d3f03364
+    uses: Staros-Labs/infra/.github/workflows/reusable-security-gitleaks.yml@409ae040cd95594781278724fe6a8ba2027913c0
     with:
       report_only: true
       scan_history: false
@@ -20,7 +20,7 @@ jobs:
       contents: read
 
   osv:
-    uses: Staros-Labs/infra/.github/workflows/reusable-security-osv.yml@07dce02accd706afbcb8a8b420de0979d3f03364
+    uses: Staros-Labs/infra/.github/workflows/reusable-security-osv.yml@409ae040cd95594781278724fe6a8ba2027913c0
     with:
       report_only: true
     permissions:
